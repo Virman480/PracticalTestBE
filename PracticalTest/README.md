@@ -1,79 +1,106 @@
 
-# Proyek API Konsumsi dan Pemesanan Ruangan (Golang)
-
-Proyek ini adalah API yang dibangun menggunakan **Golang** untuk mengelola dan menampilkan data pemesanan ruangan serta biaya konsumsi yang terkait. API ini mengambil data dari dua sumber eksternal (API booking dan API master konsumsi), menggabungkannya, dan menghitung total biaya konsumsi. Outputnya disiapkan dalam format JSON yang cocok untuk digunakan pada dashboard.
-
----
-
-## Fitur
-1. Mengambil Data Pemesanan Ruangan: 
-   - API mengambil data dari API eksternal berisi ruangan, tanggal booking, jumlah peserta, dan konsumsi.
-2. Mengambil Data Master Konsumsi:
-   - API mengambil data dari API eksternal berisi jenis konsumsi (seperti Snack Siang, Makan Siang) dan harga maksimumnya.
-3. Penggabungan Data:
+## **Fitur**
+1. **Mengambil Data Pemesanan Ruangan**: 
+   - API mengambil data dari API eksternal yang berisi ruangan, tanggal booking, jumlah peserta, dan konsumsi.
+2. **Mengambil Data Master Konsumsi**:
+   - API mengambil data dari API eksternal yang berisi jenis konsumsi (seperti Snack Siang, Makan Siang) dan harga maksimumnya.
+3. **Penggabungan Data**:
    - Data pemesanan ruangan dan master konsumsi digabungkan berdasarkan nama konsumsi.
-4. Perhitungan Biaya Konsumsi:
+4. **Perhitungan Biaya Konsumsi**:
    - Menghitung biaya konsumsi berdasarkan jumlah peserta dan harga maksimum konsumsi:
      ```
      biaya = maxPrice * participants
      ```
-5. Output JSON:
+5. **Filter Berdasarkan Tanggal**:
+   - Data pemesanan dapat difilter menggunakan parameter `startDate` dan `endDate`.
+6. **Pagination**:
+   - Data dapat dipisahkan per halaman menggunakan parameter `page` dan `limit`.
+7. **Output JSON**:
    - Menyediakan output JSON dalam format yang cocok untuk dashboard.
 
 ---
 
-## Teknologi yang Digunakan
-- *Golang*: Bahasa pemrograman utama untuk membangun API.
-- *Fiber*: Framework web untuk menangani HTTP request.
-- *Resty*: HTTP Client untuk mengambil data dari API eksternal.
-- *JSON*: Format data output API.
+## **Teknologi yang Digunakan**
+- **Golang**: Bahasa pemrograman utama untuk membangun API.
+- **Fiber**: Framework web untuk menangani HTTP request.
+- **Resty**: HTTP Client untuk mengambil data dari API eksternal.
+- **JSON**: Format data output API.
 
+---
 
+## **Struktur Proyek**
 
-## Struktur Proyek
-
+```
 practical/
 ├── booking.go             # File untuk mengambil data booking dari API eksternal
 ├── konsumsi.go            # File untuk mengambil data master konsumsi dari API eksternal
 ├── main.go                # File utama untuk menjalankan server dan endpoint API
 ├── go.mod                 # File konfigurasi modul Golang
+```
 
+---
 
+## **Cara Menjalankan Proyek**
 
-## Cara Menjalankan Proyek
-
-### 1. Persiapan
-1. Pastikan *Golang* sudah terinstal.
-   - Unduh Golang: [https://golang.org/dl](https://golang.org/dl)
+### **1. Persiapan**
+1. Pastikan **Golang** sudah terinstal di komputer Anda.  
+   - Unduh Golang di: [https://golang.org/dl](https://golang.org/dl)
 2. Pastikan koneksi internet aktif untuk mengambil data dari API eksternal.
 
-### 2. Langkah Menjalankan
+### **2. Langkah Menjalankan**
 1. Clone repository proyek ini:
-   - git clone <URL_REPOSITORY>
-   - cd practical
+   ```bash
+   git clone https://github.com/Virman480/PracticalTestBE.git
+   cd practical
+   ```
 
 2. Install dependensi:
-   - go mod tidy
-
+   ```bash
+   go mod tidy
+   ```
 
 3. Jalankan server:
-   - go run .
+   ```bash
+   go run .
+   ```
 
 4. Server akan berjalan di:
-   http://localhost:8000
+   ```
+   http://localhost:3000
+   ```
 
 ---
 
 ## **Endpoint API**
 
-### 1. Endpoint: `/dashboard`
-Deskripsi: Menampilkan data pemesanan ruangan dan detail konsumsi.
+### **1. Endpoint: `/dashboard`**
+**Deskripsi**: Menampilkan data pemesanan ruangan dan detail konsumsi.
 
-- *Method*: `GET`  
-- *URL*: `http://localhost:8000/dashboard`
+- **Method**: `GET`  
+- **URL**: `http://localhost:3000/dashboard`
 
-## Contoh Respons:
-json
+#### **Parameter Query**:
+1. **`startDate`** (opsional): Filter data pemesanan berdasarkan tanggal mulai (format: `YYYY-MM-DD`).
+2. **`endDate`** (opsional): Filter data pemesanan berdasarkan tanggal akhir (format: `YYYY-MM-DD`).
+3. **`page`** (opsional): Nomor halaman untuk pagination (default: `1`).
+4. **`limit`** (opsional): Jumlah data per halaman untuk pagination (default: `10`).
+
+#### **Contoh Request**:
+- **Tanpa Filter atau Pagination**:
+  ```
+  GET http://localhost:3000/dashboard
+  ```
+- **Dengan Filter Tanggal**:
+  ```
+  GET http://localhost:3000/dashboard?startDate=2024-01-01&endDate=2024-01-05
+  ```
+- **Dengan Pagination**:
+  ```
+  GET http://localhost:3000/dashboard?page=1&limit=5
+  ```
+
+#### **Contoh Respons**:
+```json
 [
     {
         "roomName": "Ruang Borobudur",
@@ -97,39 +124,43 @@ json
         "totalCost": 4340000
     }
 ]
-
-
-## Penjelasan Logika API
-
-1. Pengambilan Data
-   - *Booking*: API mengambil data pemesanan ruangan dari URL berikut:
-     https://66876cc30bc7155dc017a662.mockapi.io/api/dummy-data/bookingList
-
-   - *Master Konsumsi*: API mengambil data master konsumsi dari URL berikut:
-     https://6686cb5583c983911b03a7f3.mockapi.io/api/dummy-data/masterJenisKonsumsi
-
-2. Penggabungan Data
-   - Untuk setiap ruangan dalam booking, data konsumsi dicocokkan dengan data master konsumsi berdasarkan nama konsumsi.
-
-3. Perhitungan Biaya
-   - Biaya konsumsi dihitung dengan rumus:
-     cost = maxPrice * participants
-
-4. Output JSON
-   - Setiap ruangan dalam booking memiliki:
-     - *roomName*: Nama ruangan.
-     - *officeName*: Nama kantor pemesan.
-     - *bookingDate*: Tanggal pemesanan.
-     - *participants*: Jumlah peserta.
-     - *consumptionDetails*: Detail biaya konsumsi (nama konsumsi dan biaya).
-     - *totalCost*: Total biaya konsumsi untuk ruangan tersebut.
+```
 
 ---
 
-## Struktur Data
+## **Penjelasan Logika API**
 
-### *1. Data Pemesanan Ruangan (Booking)**
-Contoh Data dari API Booking:
+1. **Pengambilan Data**:
+   - Data **booking** diambil dari URL berikut:
+     ```
+     https://66876cc30bc7155dc017a662.mockapi.io/api/dummy-data/bookingList
+     ```
+   - Data **master konsumsi** diambil dari URL berikut:
+     ```
+     https://6686cb5583c983911b03a7f3.mockapi.io/api/dummy-data/masterJenisKonsumsi
+     ```
+
+2. **Penggabungan Data**:
+   - Untuk setiap ruangan dalam booking, data konsumsi dicocokkan dengan data master konsumsi berdasarkan nama konsumsi.
+
+3. **Perhitungan Biaya**:
+   - Biaya konsumsi dihitung menggunakan formula:
+     ```
+     cost = maxPrice * participants
+     ```
+
+4. **Filter Tanggal**:
+   - Pemesanan difilter berdasarkan tanggal `bookingDate` menggunakan parameter `startDate` dan `endDate`.
+
+5. **Pagination**:
+   - Data dibagi per halaman berdasarkan parameter `page` dan `limit`.
+
+---
+
+## **Struktur Data**
+
+### **1. Data Pemesanan Ruangan (Booking)**
+**Contoh Data dari API Booking**:
 ```json
 [
     {
@@ -149,8 +180,8 @@ Contoh Data dari API Booking:
 ]
 ```
 
-### 2. Data Master Konsumsi
-Contoh Data dari API Master Konsumsi:
+### **2. Data Master Konsumsi**
+**Contoh Data dari API Master Konsumsi**:
 ```json
 [
     {
@@ -173,19 +204,12 @@ Contoh Data dari API Master Konsumsi:
 
 ---
 
-## Pengembangan Selanjutnya
-
-1. Filter Data:
-   - Tambahkan fitur filter berdasarkan tanggal atau ruangan.
-2. Pagination:
-   - Jika data terlalu besar, tambahkan fitur pagination untuk membagi data menjadi halaman.
-3. Unit Testing:
-   - Gunakan library seperti `testify` untuk menulis unit test.
-4. Error Handling yang Lebih Baik:
-   - Tangani berbagai error dari API eksternal, seperti timeout atau respons kosong.
+## **Pengembangan Selanjutnya**
+1. **Unit Testing**:
+   - Gunakan library seperti `testify` untuk menulis unit test pada setiap fungsi.
+2. **Error Handling**:
+   - Tambahkan penanganan error lebih baik untuk skenario seperti timeout, respons kosong, atau data tidak valid.
+3. **Fitur Pencarian**:
+   - Tambahkan fitur pencarian ruangan berdasarkan nama ruangan atau kantor.
 
 ---
-
-## **Lisensi**
-
-Proyek ini bebas digunakan dan dimodifikasi untuk keperluan apapun.
