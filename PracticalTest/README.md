@@ -201,15 +201,3 @@ practical/
     }
 ]
 ```
-
----
-
-## **Pengembangan Selanjutnya**
-1. **Unit Testing**:
-   - Gunakan library seperti `testify` untuk menulis unit test pada setiap fungsi.
-2. **Error Handling**:
-   - Tambahkan penanganan error lebih baik untuk skenario seperti timeout, respons kosong, atau data tidak valid.
-3. **Fitur Pencarian**:
-   - Tambahkan fitur pencarian ruangan berdasarkan nama ruangan atau kantor.
-
----
