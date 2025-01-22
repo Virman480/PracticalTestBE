@@ -1,5 +1,3 @@
-// booking.go
-
 package main
 
 import (
@@ -9,6 +7,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+// Struct untuk data booking
 type Booking struct {
 	ID              string        `json:"id"`
 	RoomName        string        `json:"roomName"`
@@ -20,10 +19,12 @@ type Booking struct {
 	ListConsumption []Consumption `json:"listConsumption"`
 }
 
+// Struct untuk konsumsi dalam booking
 type Consumption struct {
 	Name string `json:"name"`
 }
 
+// Fungsi untuk mengambil data booking dari API eksternal
 func GetBookingList() ([]Booking, error) {
 	client := resty.New()
 	resp, err := client.R().Get("https://66876cc30bc7155dc017a662.mockapi.io/api/dummy-data/bookingList")
